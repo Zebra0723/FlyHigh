@@ -1,0 +1,265 @@
+/* ── Font Loading ─────────────────────────────────────────────────────────── */
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800,900&f[]=satoshi@400,500,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design Tokens ────────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    /* Paper Plane Rankings — Sky Blue + Competition Gold palette */
+    /* Deep midnight navy surfaces with electric sky accent and gold highlights */
+
+    --background: 224 20% 10%;
+    --foreground: 210 30% 94%;
+
+    --card: 224 18% 13%;
+    --card-foreground: 210 30% 94%;
+
+    --popover: 224 18% 13%;
+    --popover-foreground: 210 30% 94%;
+
+    --primary: 200 85% 55%;         /* Sky blue accent */
+    --primary-foreground: 224 20% 8%;
+
+    --secondary: 224 14% 18%;
+    --secondary-foreground: 210 30% 94%;
+
+    --muted: 224 14% 16%;
+    --muted-foreground: 210 20% 55%;
+
+    --accent: 42 95% 55%;           /* Gold accent */
+    --accent-foreground: 224 20% 8%;
+
+    --destructive: 0 62% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 224 12% 20%;
+    --input: 224 12% 20%;
+    --ring: 200 85% 55%;
+
+    --radius: 0.5rem;
+
+    /* Custom tokens */
+    --font-display: 'Cabinet Grotesk', 'Helvetica Neue', sans-serif;
+    --font-body: 'Satoshi', 'Inter', sans-serif;
+
+    /* Rank colors */
+    --gold: #F5C518;
+    --silver: #A8B3C0;
+    --bronze: #CD7F32;
+  }
+
+  /* Light mode variant */
+  .light {
+    --background: 210 25% 97%;
+    --foreground: 224 20% 10%;
+    --card: 210 25% 100%;
+    --card-foreground: 224 20% 10%;
+    --popover: 210 25% 100%;
+    --popover-foreground: 224 20% 10%;
+    --primary: 200 80% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 20% 93%;
+    --secondary-foreground: 224 20% 10%;
+    --muted: 210 20% 92%;
+    --muted-foreground: 210 15% 45%;
+    --accent: 42 90% 45%;
+    --accent-foreground: 224 20% 8%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 20% 85%;
+    --input: 210 20% 85%;
+    --ring: 200 80% 40%;
+  }
+}
+
+/* ── Base Styles ──────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100dvh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ── Component Utilities ─────────────────────────────────────────────────── */
+@layer components {
+  /* Rank badge */
+  .rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 0.8rem;
+    letter-spacing: -0.02em;
+  }
+
+  .rank-1 { background: var(--gold); color: #1a1500; }
+  .rank-2 { background: var(--silver); color: #1a1f24; }
+  .rank-3 { background: var(--bronze); color: #2a1500; }
+  .rank-other { background: hsl(var(--muted)); color: hsl(var(--muted-foreground)); }
+
+  /* Group badge */
+  .group-badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold;
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .group-a4 { background: rgb(59 130 246 / 0.18); color: rgb(37 99 235); border: 1px solid rgb(59 130 246 / 0.35); }
+  .group-xl { background: rgb(168 85 247 / 0.18); color: rgb(124 58 237); border: 1px solid rgb(168 85 247 / 0.35); }
+  .group-xs { background: rgb(16 185 129 / 0.18); color: rgb(5 150 105); border: 1px solid rgb(16 185 129 / 0.35); }
+  .group-default { @apply bg-muted text-muted-foreground border border-border; }
+  .light .group-a4 { background: rgb(59 130 246 / 0.12); color: rgb(29 78 216); border: 1px solid rgb(59 130 246 / 0.3); }
+  .light .group-xl { background: rgb(168 85 247 / 0.12); color: rgb(109 40 217); border: 1px solid rgb(168 85 247 / 0.3); }
+  .light .group-xs { background: rgb(16 185 129 / 0.12); color: rgb(4 120 87); border: 1px solid rgb(16 185 129 / 0.3); }
+
+  /* Type badge */
+  .type-badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+  .type-glider { background: rgb(14 165 233 / 0.15); color: rgb(2 132 199); }
+  .type-distance { background: rgb(245 158 11 / 0.15); color: rgb(180 83 9); }
+  .type-stunt { background: rgb(244 63 94 / 0.15); color: rgb(190 18 60); }
+  .type-speed { background: rgb(249 115 22 / 0.15); color: rgb(194 65 12); }
+  .type-acrobatic { background: rgb(139 92 246 / 0.15); color: rgb(109 40 217); }
+  .type-default { @apply bg-muted text-muted-foreground; }
+  .light .type-glider { background: rgb(14 165 233 / 0.12); color: rgb(3 105 161); }
+  .light .type-distance { background: rgb(245 158 11 / 0.12); color: rgb(146 64 14); }
+  .light .type-stunt { background: rgb(244 63 94 / 0.12); color: rgb(159 18 57); }
+  .light .type-speed { background: rgb(249 115 22 / 0.12); color: rgb(154 52 18); }
+  .light .type-acrobatic { background: rgb(139 92 246 / 0.12); color: rgb(91 33 182); }
+
+  /* Shimmer skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--secondary)) 50%, hsl(var(--muted)) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: 0.375rem;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* Stat card */
+  .stat-card {
+    @apply rounded-xl p-4 bg-card border border-border/50;
+  }
+
+  /* Nav active state */
+  .nav-link {
+    @apply relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors;
+    color: hsl(var(--muted-foreground));
+  }
+  .nav-link:hover { color: hsl(var(--foreground)); background: hsl(var(--muted)); }
+  .nav-link.active { color: hsl(var(--primary)); background: hsl(var(--primary) / 0.12); }
+
+  /* Tutorial step */
+  .tutorial-step {
+    @apply relative pl-10;
+  }
+  .tutorial-step-number {
+    @apply absolute left-0 top-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold;
+    font-family: var(--font-display);
+    background: hsl(var(--primary) / 0.15);
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary) / 0.3);
+  }
+
+  /* Leaderboard row hover */
+  .leaderboard-row {
+    @apply flex items-center gap-4 p-3 rounded-xl transition-colors cursor-pointer;
+  }
+  .leaderboard-row:hover { background: hsl(var(--muted) / 0.6); }
+
+  /* Difficulty stars */
+  .difficulty-dot {
+    @apply inline-block w-2 h-2 rounded-full;
+  }
+  .difficulty-dot.filled { background: var(--gold); }
+  .difficulty-dot.empty { @apply bg-border; }
+}
+
+/* ── Animations ───────────────────────────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(-3deg); }
+  50% { transform: translateY(-10px) rotate(-3deg); }
+}
+
+.float-plane {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fadeUp 0.5s ease-out forwards;
+}
+
+/* Hero gradient */
+.hero-gradient {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, hsl(200 85% 55% / 0.15) 0%, transparent 70%),
+              radial-gradient(ellipse 60% 40% at 80% 20%, hsl(42 95% 55% / 0.08) 0%, transparent 60%),
+              hsl(var(--background));
+}
+
+/* Section divider */
+.section-divider {
+  border-top: 1px solid hsl(var(--border) / 0.6);
+}
+
+/* Grid pattern overlay */
+.grid-overlay {
+  background-image: linear-gradient(hsl(var(--border) / 0.08) 1px, transparent 1px),
+                    linear-gradient(90deg, hsl(var(--border) / 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Score bar */
+.score-bar-track {
+  @apply h-1.5 rounded-full bg-muted overflow-hidden;
+}
+.score-bar-fill {
+  @apply h-full rounded-full transition-all duration-700;
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(200 85% 70%));
+}
