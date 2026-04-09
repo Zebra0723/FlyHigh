@@ -240,7 +240,8 @@ function migrate() {
 
   // Seed settings row if missing
   const sc = sqlite.prepare("SELECT COUNT(*) as cnt FROM competition_settings").get() as { cnt: number };
-  if (sc.cnt === 0) sqlite.exec(`INSERT INTO competition_settings (name) VALUES ('FlyHigh Championships')`);
+  if (sc.cnt === 0) sqlite.exec(`INSERT INTO competition_settings (name, admin_password) VALUES ('FlyHigh Championships', 'adminapproved')`);
+  else sqlite.prepare(`UPDATE competition_settings SET admin_password='adminapproved' WHERE admin_password='admin123'`).run();
 
   // No planes seeded — admin adds them via the admin panel
 }
