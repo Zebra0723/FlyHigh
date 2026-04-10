@@ -9,7 +9,7 @@ interface Props {
   readOnly?: boolean;
 }
 
-const MAX_IMAGE_SIZE = 1.5 * 1024 * 1024; // 1.5 MB
+const MAX_IMAGE_SIZE = 30 * 1024 * 1024; // 30 MB
 
 function ImageSlot({
   dataUrl, mimeType, onChange, readOnly,
@@ -17,7 +17,7 @@ function ImageSlot({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (file: File) => {
-    if (file.size > MAX_IMAGE_SIZE) { alert("Image must be under 1.5 MB. Try resizing it first."); return; }
+    if (file.size > MAX_IMAGE_SIZE) { alert("Image must be under 30 MB."); return; }
     const reader = new FileReader();
     reader.onload = () => onChange(reader.result as string, file.type);
     reader.readAsDataURL(file);
@@ -54,7 +54,7 @@ function ImageSlot({
       <span className="text-xs text-muted-foreground group-hover:text-primary transition-colors">
         Add step photo
       </span>
-      <span className="text-[10px] text-muted-foreground/60">JPG, PNG, WebP — max 1.5 MB</span>
+      <span className="text-[10px] text-muted-foreground/60">JPG, PNG, WebP — max 30 MB</span>
       <input
         ref={inputRef}
         type="file"

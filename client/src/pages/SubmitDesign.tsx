@@ -106,7 +106,7 @@ export default function SubmitDesign() {
           </div>
 
           <div>
-            <Label htmlFor="authorEmail" className="text-xs mb-1.5 block">Email <span className="text-muted-foreground">(optional — we'll notify you when approved)</span></Label>
+            <Label htmlFor="authorEmail" className="text-xs mb-1.5 block">Email <span className="text-muted-foreground">(optional)</span></Label>
             <Input id="authorEmail" type="email" value={form.authorEmail} onChange={e => set("authorEmail", e.target.value)} placeholder="you@example.com" className="text-sm max-w-sm" data-testid="input-author-email" />
           </div>
 
