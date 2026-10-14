@@ -1,0 +1,19 @@
+# Render Blueprint for the standalone Studio app.
+# In Render: New > Blueprint, pick this repo, and set the blueprint path to studio/render.yaml.
+services:
+  - type: web
+    name: flyhigh-studio
+    runtime: node
+    rootDir: studio
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/config
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: REPLICATE_API_TOKEN
+        sync: false
+      - key: ACCESS_CODE
+        sync: false
