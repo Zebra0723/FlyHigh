@@ -3,130 +3,146 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
     <title>FlyHigh Studio</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>" />
+    <meta name="description" content="Turn a 3D model into a studio photograph of the real object." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%2314120f'/><circle cx='16' cy='16' r='7' fill='none' stroke='%23f2efe8' stroke-width='2'/><circle cx='16' cy='16' r='2.5' fill='%23c1440e'/></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" />
   </head>
   <body>
-    <header class="topbar">
-      <div class="brand">
-        <span class="logo">◐</span>
-        <div>
-          <h1>FlyHigh Studio</h1>
-          <p>Turn a 3D model into a studio photo of the real thing</p>
-        </div>
-      </div>
+    <header class="masthead">
+      <a class="wordmark" href="/">FlyHigh <em>Studio</em></a>
+      <p class="eyebrow plain">3D model &rarr; studio photograph</p>
     </header>
 
     <main class="layout">
-      <aside class="panel">
-        <section>
-          <h2>1 · Model</h2>
+      <aside class="controls" aria-label="Shot settings">
+        <section class="block">
+          <div class="block-head"><span class="num">01</span><h2 class="eyebrow plain">Model</h2></div>
           <label class="dropzone" id="dropzone">
             <input type="file" id="fileInput" multiple
               accept=".glb,.gltf,.obj,.mtl,.stl,.fbx,.ply,.bin,.png,.jpg,.jpeg,.webp" />
-            <strong>Drop a 3D model</strong>
-            <span>GLB · GLTF · OBJ(+MTL) · STL · FBX · PLY<br />Include textures / .bin files together</span>
+            <span class="dz-title">Drop a 3D model, or <u>browse</u></span>
+            <span class="dz-sub">GLB, GLTF, OBJ + MTL, STL, FBX, PLY. Add textures and .bin files together.</span>
           </label>
-          <div class="model-name" id="modelName">Demo: paper plane</div>
-          <div class="row">
-            <button data-rot="x" title="Rotate 90° around X">↻ X</button>
-            <button data-rot="y" title="Rotate 90° around Y">↻ Y</button>
-            <button data-rot="z" title="Rotate 90° around Z">↻ Z</button>
-            <button id="reframe" title="Reset camera">⌖ Frame</button>
+          <div class="model-row">
+            <span class="model-name" id="modelName">Demo: paper plane</span>
+            <label class="toggle"><input type="checkbox" id="clay" /><span>Clay</span></label>
           </div>
-          <label class="check"><input type="checkbox" id="clay" /> Clay preview (ignore model colours)</label>
+          <div class="seg" role="group" aria-label="Orient model">
+            <button type="button" data-rot="x">Rotate X</button>
+            <button type="button" data-rot="y">Rotate Y</button>
+            <button type="button" data-rot="z">Rotate Z</button>
+            <button type="button" id="reframe">Reframe</button>
+          </div>
         </section>
 
-        <section>
-          <h2>2 · Describe the real object</h2>
-          <label>What is it?
-            <input id="subject" placeholder="e.g. folded paper airplane, ceramic coffee mug" maxlength="300" />
+        <section class="block">
+          <div class="block-head"><span class="num">02</span><h2 class="eyebrow plain">The real object</h2></div>
+          <label class="field">
+            <input id="subject" placeholder=" " maxlength="300" autocomplete="off" />
+            <span>What is it?</span>
           </label>
-          <label>Materials (optional)
-            <input id="material" placeholder="e.g. crisp white A4 printer paper" maxlength="300" />
+          <label class="field">
+            <input id="material" placeholder=" " maxlength="300" autocomplete="off" />
+            <span>Materials (optional)</span>
           </label>
         </section>
 
-        <section>
-          <h2>3 · Studio setup</h2>
-          <label>Backdrop
-            <select id="backdrop">
-              <option value="white" data-color="#f2f2f2">White seamless</option>
-              <option value="grey" data-color="#9a9a9a">Grey gradient</option>
-              <option value="black" data-color="#141414">Matte black</option>
-              <option value="warm" data-color="#e9dcc8">Warm beige</option>
-              <option value="concrete" data-color="#b4b2ae">Polished concrete</option>
-              <option value="wood" data-color="#c9a77c">Oak tabletop</option>
-            </select>
-          </label>
-          <label>Lighting
-            <select id="lighting">
-              <option value="softbox">Softbox high-key</option>
-              <option value="hero">Product hero</option>
-              <option value="dramatic">Dramatic rim</option>
-              <option value="natural">Natural window</option>
-            </select>
-          </label>
-          <label>Frame
-            <select id="aspect">
-              <option value="1:1">Square 1:1</option>
-              <option value="3:2">Landscape 3:2</option>
-              <option value="2:3">Portrait 2:3</option>
-            </select>
-          </label>
-          <label>Preview exposure
+        <section class="block">
+          <div class="block-head"><span class="num">03</span><h2 class="eyebrow plain">Studio</h2></div>
+          <fieldset>
+            <legend>Backdrop</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="backdrop" value="white" data-color="#f4f3f0" checked /><span class="dot"></span>White</label>
+              <label class="chip"><input type="radio" name="backdrop" value="grey" data-color="#a3a19c" /><span class="dot"></span>Grey</label>
+              <label class="chip"><input type="radio" name="backdrop" value="black" data-color="#161513" /><span class="dot"></span>Black</label>
+              <label class="chip"><input type="radio" name="backdrop" value="warm" data-color="#e9dcc8" /><span class="dot"></span>Beige</label>
+              <label class="chip"><input type="radio" name="backdrop" value="concrete" data-color="#b6b3ad" /><span class="dot"></span>Concrete</label>
+              <label class="chip"><input type="radio" name="backdrop" value="wood" data-color="#c9a77c" /><span class="dot"></span>Oak</label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Lighting</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="lighting" value="softbox" checked /><span class="dot"></span>Softbox</label>
+              <label class="chip"><input type="radio" name="lighting" value="hero" /><span class="dot"></span>Product hero</label>
+              <label class="chip"><input type="radio" name="lighting" value="dramatic" /><span class="dot"></span>Dramatic</label>
+              <label class="chip"><input type="radio" name="lighting" value="natural" /><span class="dot"></span>Window</label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Frame</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="aspect" value="1:1" checked /><span class="dot"></span>1 : 1</label>
+              <label class="chip"><input type="radio" name="aspect" value="3:2" /><span class="dot"></span>3 : 2</label>
+              <label class="chip"><input type="radio" name="aspect" value="2:3" /><span class="dot"></span>2 : 3</label>
+            </div>
+          </fieldset>
+          <label class="range">
+            <span class="legend">Preview exposure</span>
             <input type="range" id="exposure" min="0.4" max="2" step="0.05" value="1" />
           </label>
-          <label>Extra direction (optional)
-            <textarea id="extra" rows="2" maxlength="500" placeholder="e.g. slight dust on surface, 45° hero angle"></textarea>
+          <label class="field">
+            <textarea id="extra" placeholder=" " rows="2" maxlength="500"></textarea>
+            <span>Extra direction (optional)</span>
           </label>
         </section>
 
-        <section>
-          <h2>4 · Generate</h2>
-          <label>Engine
-            <select id="provider"></select>
+        <section class="block">
+          <div class="block-head"><span class="num">04</span><h2 class="eyebrow plain">Develop</h2></div>
+          <fieldset>
+            <legend>Engine</legend>
+            <div class="chips" id="providers"></div>
+          </fieldset>
+          <p class="note" id="providerHint"></p>
+          <label class="field" id="accessWrap" hidden>
+            <input id="accessCode" type="password" placeholder=" " autocomplete="off" />
+            <span>Access code</span>
           </label>
-          <p class="hint" id="providerHint"></p>
-          <label id="accessWrap" hidden>Access code
-            <input id="accessCode" type="password" autocomplete="off" />
-          </label>
-          <button class="primary" id="generate">Generate photo</button>
-          <p class="error" id="error" hidden></p>
+          <button class="btn" id="generate" type="button">
+            <span class="btn-label">Generate photograph</span><span class="arw" aria-hidden="true">&rarr;</span>
+          </button>
+          <p class="err" id="error" role="alert" hidden></p>
         </section>
       </aside>
 
-      <section class="stage">
+      <section class="stage" aria-label="Viewer">
+        <div class="stage-head">
+          <h1 class="d3">Compose the <em>shot</em></h1>
+          <p class="note">Drag to orbit, scroll to zoom, right-drag to pan. The frame is exactly what gets photographed.</p>
+        </div>
         <div class="viewport-wrap">
           <div class="viewport" id="viewport"></div>
         </div>
-        <p class="hint center">Drag to orbit · scroll to zoom · right-drag to pan. The frame above is exactly what gets photographed.</p>
-      </section>
 
-      <aside class="results">
-        <h2>Results</h2>
-        <div id="gallery" class="gallery">
-          <p class="empty">Your generated photos will appear here.</p>
+        <div class="results">
+          <div class="block-head"><span class="num">05</span><h2 class="eyebrow plain">Contact sheet</h2></div>
+          <div id="gallery" class="gallery">
+            <p class="empty">Developed photographs will appear here.</p>
+          </div>
         </div>
-      </aside>
+      </section>
     </main>
 
     <dialog id="lightbox">
-      <div class="lb-body">
-        <div class="compare" id="compare">
-          <img id="lbRef" alt="3D reference" />
-          <div class="compare-top" id="compareTop"><img id="lbImg" alt="Generated photo" /></div>
-          <input type="range" id="compareSlider" min="0" max="100" value="100" aria-label="Compare with reference" />
-        </div>
-        <div class="lb-actions">
-          <span class="hint">Slide to compare with the 3D reference</span>
-          <a id="lbDownload" class="button" download="studio-photo.png">Download</a>
-          <button id="lbClose">Close</button>
-        </div>
+      <div class="compare">
+        <img id="lbRef" alt="3D reference" />
+        <div class="compare-top" id="compareTop"><img id="lbImg" alt="Generated photograph" /></div>
+      </div>
+      <label class="range">
+        <span class="legend">Photograph / 3D reference</span>
+        <input type="range" id="compareSlider" min="0" max="100" value="100" />
+      </label>
+      <div class="lb-actions">
         <details>
-          <summary>Prompt used</summary>
+          <summary class="eyebrow plain">Prompt</summary>
           <p id="lbPrompt" class="prompt"></p>
         </details>
+        <a id="lbDownload" class="btn" download="studio-photograph.jpg"><span class="btn-label">Download</span></a>
+        <button id="lbClose" class="btn ghost" type="button"><span class="btn-label">Close</span></button>
       </div>
     </dialog>
 

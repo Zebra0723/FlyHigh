@@ -38,6 +38,7 @@ export class StudioViewer {
     this.scene = new THREE.Scene();
     const pmrem = new THREE.PMREMGenerator(this.renderer);
     this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    this.scene.environmentIntensity = 0.75;
     this.setBackdrop("#f2f2f2");
 
     this.camera = new THREE.PerspectiveCamera(30, 1, 0.01, 1000);
@@ -161,7 +162,7 @@ export class StudioViewer {
     this.renderer.toneMappingExposure = v;
   }
 
-  // Render the current view at an exact output size; returns PNG data URLs.
+  // Render the current view at an exact output size; returns image data URLs.
   capture(width, height) {
     const r = this.renderer;
     const prevSize = r.getSize(new THREE.Vector2());
@@ -174,7 +175,8 @@ export class StudioViewer {
     this.camera.updateProjectionMatrix();
 
     r.render(this.scene, this.camera);
-    const beauty = r.domElement.toDataURL("image/png");
+    // JPEG keeps the upload well under serverless body limits.
+    const beauty = r.domElement.toDataURL("image/jpeg", 0.92);
 
     // Depth pass: tight near/far around the model for maximum contrast.
     const camDist = this.camera.position.distanceTo(this.center);

@@ -47,13 +47,45 @@ Production build: `npm run build && npm start`. One Node process serves both the
 
 ## Deploy
 
-**Render (same host as the main app, as a separate service):**
+Only this folder gets deployed. The main FlyHigh paper plane app is not built or deployed by
+any of the steps below, because every option points the host at the `studio` directory.
+
+### Vercel (recommended)
+
+1. Go to [vercel.com/new](https://vercel.com/new) and import the `FlyHigh` GitHub repo.
+2. On the configure screen, next to **Root Directory**, click **Edit** and choose `studio`.
+   This is the step that makes Vercel deploy only the Studio app and ignore the main site.
+3. Leave the build settings alone. `studio/vercel.json` already sets them (Vite, `npm run build`, output `dist`).
+4. Open **Environment Variables** and add at least one of:
+   - `OPENAI_API_KEY`
+   - `GEMINI_API_KEY`
+   - `REPLICATE_API_TOKEN`
+
+   Strongly recommended: `ACCESS_CODE`, set to any password. Without it, anyone with the link can spend your API credits.
+5. Click **Deploy**. When it finishes, open the URL. The engines whose keys you set appear under 04 Develop.
+
+To change keys later, go to Project → Settings → Environment Variables, then redeploy from the
+Deployments tab, because env changes only apply to new deployments.
+
+How it runs on Vercel: the page is served as static files, and `api/config.js` and `api/generate.js`
+run as serverless functions (sharing `server/handlers.js` with the Express server). `vercel.json`
+gives the functions up to 300 seconds, because image generation can take a minute or more. On the Hobby plan
+that limit needs Fluid Compute, which is on by default for new projects.
+The per-IP rate limit is per function instance on Vercel, so rely on `ACCESS_CODE` to keep strangers out.
+
+CLI alternative: `cd studio && npx vercel` (answer the prompts), add the env vars with
+`npx vercel env add OPENAI_API_KEY`, then `npx vercel --prod`.
+
+### Render
+
 New → Web Service, pick this repo, then set:
 - Root Directory: `studio`
 - Build Command: `npm install --include=dev && npm run build`
 - Start Command: `npm start`
-- Environment: your API key(s), plus `ACCESS_CODE` if you want one
+- Environment: your API key(s), plus `ACCESS_CODE`
 
 You can also use the blueprint in `studio/render.yaml`.
 
-**Anywhere with Docker:** `docker build -t flyhigh-studio studio && docker run -p 3001:3001 -e OPENAI_API_KEY=... flyhigh-studio`
+### Docker
+
+`docker build -t flyhigh-studio studio && docker run -p 3001:3001 -e OPENAI_API_KEY=... flyhigh-studio`
