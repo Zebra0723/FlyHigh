@@ -20,6 +20,18 @@ so you can deploy it on its own.
    The server builds a product-photography prompt and calls the image model you picked.
 5. Compare the result with the 3D reference using the before/after slider, then download it.
 
+## Claude
+
+Claude works as the art director. It can't draw the photo itself, so it works alongside an image engine:
+
+- **Identify with Claude** (section 02) looks at your model and fills in what the object is and what it's made of.
+- **Claude art direction** (section 04, on by default) has Claude study the render and write a tailored
+  photographer's brief for the engine you picked, instead of the fixed template. For FLUX, which only sees a
+  depth map, Claude describes colours and materials in full. If Claude fails, generation falls back to the template.
+
+Set `ANTHROPIC_API_KEY` to turn it on. Requests use Claude Opus 5.5 (`CLAUDE_MODEL` overrides it), with
+server-side refusal fallback enabled (`fallbacks: "default"`).
+
 ## Engines
 
 Set at least one key. The UI only lists engines whose key is set.
@@ -56,7 +68,7 @@ any of the steps below, because every option points the host at the `studio` dir
 2. On the configure screen, next to **Root Directory**, click **Edit** and choose `studio`.
    This is the step that makes Vercel deploy only the Studio app and ignore the main site.
 3. Leave the build settings alone. `studio/vercel.json` already sets them (Vite, `npm run build`, output `dist`).
-4. Open **Environment Variables** and add at least one of:
+4. Open **Environment Variables**. Add `ANTHROPIC_API_KEY` for Claude, plus at least one image engine:
    - `OPENAI_API_KEY`
    - `GEMINI_API_KEY`
    - `REPLICATE_API_TOKEN`

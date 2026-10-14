@@ -49,6 +49,12 @@
             <input id="material" placeholder=" " maxlength="300" autocomplete="off" />
             <span>Materials (optional)</span>
           </label>
+          <div class="claude-row" id="claudeIdentifyRow" hidden>
+            <button class="btn ghost" id="identify" type="button">
+              <span class="btn-label">Identify with Claude</span><span class="arw" aria-hidden="true">&rarr;</span>
+            </button>
+            <p class="note">Claude looks at the model and fills in what it is and what it's made of.</p>
+          </div>
         </section>
 
         <section class="block">
@@ -98,6 +104,10 @@
             <div class="chips" id="providers"></div>
           </fieldset>
           <p class="note" id="providerHint"></p>
+          <div class="claude-direct" id="claudeDirectRow" hidden>
+            <label class="toggle"><input type="checkbox" id="useClaude" checked /><span>Claude art direction</span></label>
+            <p class="note">Claude studies the render and writes the photographer's brief for the engine, instead of the fixed template.</p>
+          </div>
           <label class="field" id="accessWrap" hidden>
             <input id="accessCode" type="password" placeholder=" " autocomplete="off" />
             <span>Access code</span>
@@ -138,7 +148,7 @@
       </label>
       <div class="lb-actions">
         <details>
-          <summary class="eyebrow plain">Prompt</summary>
+          <summary class="eyebrow plain" id="lbPromptLabel">Prompt</summary>
           <p id="lbPrompt" class="prompt"></p>
         </details>
         <a id="lbDownload" class="btn" download="studio-photograph.jpg"><span class="btn-label">Download</span></a>

@@ -2,7 +2,7 @@ import express from "express";
 import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
-import { getConfig, generate } from "./handlers.js";
+import { getConfig, generate, describe } from "./handlers.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 loadDotEnv(path.resolve(__dirname, "..", ".env"));
@@ -11,6 +11,11 @@ const app = express();
 app.use(express.json({ limit: "30mb" }));
 
 app.get("/api/config", (_req, res) => res.json(getConfig()));
+
+app.post("/api/describe", async (req, res) => {
+  const { status, body } = await describe(req.body, req.ip);
+  res.status(status).json(body);
+});
 
 app.post("/api/generate", async (req, res) => {
   const { status, body } = await generate(req.body, req.ip);
@@ -26,6 +31,7 @@ if (fs.existsSync(distPath)) {
 const port = Number(process.env.PORT || 3001);
 app.listen(port, () => {
   const enabled = getConfig().providers.map((p) => p.id);
+  if (getConfig().claude) enabled.push("claude (art director)");
   console.log(`Studio server on :${port} — providers: ${enabled.join(", ") || "NONE (set an API key)"}`);
 });
 

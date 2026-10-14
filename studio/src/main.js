@@ -82,11 +82,15 @@ syncAspect();
 
 // ---- Server config ------------------------------------------------------
 let providers = [];
+let claudeOn = false;
 async function loadConfig() {
   try {
     const cfg = await fetch("/api/config").then((r) => r.json());
     providers = cfg.providers || [];
     $("accessWrap").hidden = !cfg.requiresAccessCode;
+    $("claudeIdentifyRow").hidden = !cfg.claude;
+    $("claudeDirectRow").hidden = !cfg.claude;
+    claudeOn = Boolean(cfg.claude);
     try {
       $("accessCode").value = localStorage.getItem("studio-access") || "";
     } catch {}
@@ -124,18 +128,8 @@ $("generate").addEventListener("click", async () => {
   const aspect = picked("aspect").value;
   const [w, h] = CAPTURE_SIZES[aspect];
   const { beauty, depth } = viewer.capture(w, h);
-  const reference = provider.uses === "depth" ? depth : beauty;
-  const options = {
-    subject: $("subject").value,
-    material: $("material").value,
-    backdrop: picked("backdrop").value,
-    lighting: picked("lighting").value,
-    extra: $("extra").value,
-  };
-  const accessCode = $("accessCode").value;
-  try {
-    localStorage.setItem("studio-access", accessCode);
-  } catch {}
+  const options = currentOptions();
+  const accessCode = rememberAccessCode();
 
   const card = addPendingCard(beauty, aspect, provider.label);
   const btn = $("generate");
@@ -145,11 +139,20 @@ $("generate").addEventListener("click", async () => {
     const res = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ provider: provider.id, accessCode, reference, aspect, options }),
+      body: JSON.stringify({
+        provider: provider.id,
+        accessCode,
+        beauty,
+        // Only engines that work from geometry need the depth map; skip it otherwise to keep the upload small.
+        depth: provider.uses === "depth" ? depth : undefined,
+        aspect,
+        options,
+        useClaude: claudeOn && $("useClaude").checked,
+      }),
     });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(json.error || `Request failed (${res.status})`);
-    fillCard(card, json.image, beauty, json.prompt, provider.label);
+    fillCard(card, json.image, beauty, json.prompt, provider.label, json.directedBy);
   } catch (err) {
     card.remove();
     showError(err.message);
@@ -174,18 +177,19 @@ function addPendingCard(reference, aspect, label) {
   return card;
 }
 
-function fillCard(card, image, reference, prompt, label) {
+function fillCard(card, image, reference, prompt, label, directedBy) {
   shotCount += 1;
   const n = String(shotCount).padStart(2, "0");
   card.classList.remove("pending");
   card.innerHTML = `<img src="${image}" alt="Generated studio photograph ${n}" />
     <figcaption style="color:#fff;mix-blend-mode:difference"><span>No. ${n}</span><span>${label}</span></figcaption>`;
-  card.addEventListener("click", () => openLightbox(image, reference, prompt));
-  openLightbox(image, reference, prompt);
+  card.addEventListener("click", () => openLightbox(image, reference, prompt, directedBy));
+  openLightbox(image, reference, prompt, directedBy);
 }
 
 // ---- Lightbox with before/after slider ----------------------------------
-function openLightbox(image, reference, prompt) {
+function openLightbox(image, reference, prompt, directedBy) {
+  $("lbPromptLabel").textContent = directedBy === "claude" ? "Brief written by Claude" : "Prompt";
   $("lbImg").src = image;
   $("lbRef").src = reference;
   $("lbPrompt").textContent = prompt;
@@ -200,6 +204,50 @@ $("compareSlider").addEventListener("input", (e) => {
 });
 $("lbClose").addEventListener("click", () => $("lightbox").close());
 $("lightbox").addEventListener("click", (e) => e.target === $("lightbox") && $("lightbox").close());
+
+function currentOptions() {
+  return {
+    subject: $("subject").value,
+    material: $("material").value,
+    backdrop: picked("backdrop").value,
+    lighting: picked("lighting").value,
+    extra: $("extra").value,
+  };
+}
+
+function rememberAccessCode() {
+  const code = $("accessCode").value;
+  try {
+    localStorage.setItem("studio-access", code);
+  } catch {}
+  return code;
+}
+
+// ---- Claude: identify the object ---------------------------------------
+$("identify").addEventListener("click", async () => {
+  showError("");
+  const btn = $("identify");
+  const label = btn.querySelector(".btn-label");
+  btn.disabled = true;
+  label.textContent = "Claude is looking…";
+  try {
+    const { beauty } = viewer.capture(1024, 1024);
+    const res = await fetch("/api/describe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ accessCode: rememberAccessCode(), beauty, options: currentOptions() }),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.error || `Request failed (${res.status})`);
+    $("subject").value = json.subject;
+    $("material").value = json.materials;
+  } catch (err) {
+    showError(err.message);
+  } finally {
+    btn.disabled = false;
+    label.textContent = "Identify with Claude";
+  }
+});
 
 function showError(msg) {
   $("error").hidden = !msg;

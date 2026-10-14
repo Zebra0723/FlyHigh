@@ -9,6 +9,8 @@ services:
     startCommand: npm start
     healthCheckPath: /api/config
     envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
       - key: OPENAI_API_KEY
         sync: false
       - key: GEMINI_API_KEY

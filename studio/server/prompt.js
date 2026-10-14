@@ -1,4 +1,4 @@
-const LIGHTING = {
+export const LIGHTING = {
   softbox:
     "high-key studio lighting with a large overhead softbox and two strip-light fills, soft even shadows, gentle specular highlights",
   dramatic:
@@ -9,7 +9,7 @@ const LIGHTING = {
     "soft natural window light from the side, gentle bounce fill, realistic soft shadows",
 };
 
-const BACKDROP = {
+export const BACKDROP = {
   white: "a seamless pure white paper sweep backdrop",
   grey: "a seamless mid-grey gradient studio backdrop",
   black: "a seamless matte black backdrop",
