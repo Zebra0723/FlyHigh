@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FlyHigh Studio</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">◐</span>
+        <div>
+          <h1>FlyHigh Studio</h1>
+          <p>Turn a 3D model into a studio photo of the real thing</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel">
+        <section>
+          <h2>1 · Model</h2>
+          <label class="dropzone" id="dropzone">
+            <input type="file" id="fileInput" multiple
+              accept=".glb,.gltf,.obj,.mtl,.stl,.fbx,.ply,.bin,.png,.jpg,.jpeg,.webp" />
+            <strong>Drop a 3D model</strong>
+            <span>GLB · GLTF · OBJ(+MTL) · STL · FBX · PLY<br />Include textures / .bin files together</span>
+          </label>
+          <div class="model-name" id="modelName">Demo: paper plane</div>
+          <div class="row">
+            <button data-rot="x" title="Rotate 90° around X">↻ X</button>
+            <button data-rot="y" title="Rotate 90° around Y">↻ Y</button>
+            <button data-rot="z" title="Rotate 90° around Z">↻ Z</button>
+            <button id="reframe" title="Reset camera">⌖ Frame</button>
+          </div>
+          <label class="check"><input type="checkbox" id="clay" /> Clay preview (ignore model colours)</label>
+        </section>
+
+        <section>
+          <h2>2 · Describe the real object</h2>
+          <label>What is it?
+            <input id="subject" placeholder="e.g. folded paper airplane, ceramic coffee mug" maxlength="300" />
+          </label>
+          <label>Materials (optional)
+            <input id="material" placeholder="e.g. crisp white A4 printer paper" maxlength="300" />
+          </label>
+        </section>
+
+        <section>
+          <h2>3 · Studio setup</h2>
+          <label>Backdrop
+            <select id="backdrop">
+              <option value="white" data-color="#f2f2f2">White seamless</option>
+              <option value="grey" data-color="#9a9a9a">Grey gradient</option>
+              <option value="black" data-color="#141414">Matte black</option>
+              <option value="warm" data-color="#e9dcc8">Warm beige</option>
+              <option value="concrete" data-color="#b4b2ae">Polished concrete</option>
+              <option value="wood" data-color="#c9a77c">Oak tabletop</option>
+            </select>
+          </label>
+          <label>Lighting
+            <select id="lighting">
+              <option value="softbox">Softbox high-key</option>
+              <option value="hero">Product hero</option>
+              <option value="dramatic">Dramatic rim</option>
+              <option value="natural">Natural window</option>
+            </select>
+          </label>
+          <label>Frame
+            <select id="aspect">
+              <option value="1:1">Square 1:1</option>
+              <option value="3:2">Landscape 3:2</option>
+              <option value="2:3">Portrait 2:3</option>
+            </select>
+          </label>
+          <label>Preview exposure
+            <input type="range" id="exposure" min="0.4" max="2" step="0.05" value="1" />
+          </label>
+          <label>Extra direction (optional)
+            <textarea id="extra" rows="2" maxlength="500" placeholder="e.g. slight dust on surface, 45° hero angle"></textarea>
+          </label>
+        </section>
+
+        <section>
+          <h2>4 · Generate</h2>
+          <label>Engine
+            <select id="provider"></select>
+          </label>
+          <p class="hint" id="providerHint"></p>
+          <label id="accessWrap" hidden>Access code
+            <input id="accessCode" type="password" autocomplete="off" />
+          </label>
+          <button class="primary" id="generate">Generate photo</button>
+          <p class="error" id="error" hidden></p>
+        </section>
+      </aside>
+
+      <section class="stage">
+        <div class="viewport-wrap">
+          <div class="viewport" id="viewport"></div>
+        </div>
+        <p class="hint center">Drag to orbit · scroll to zoom · right-drag to pan. The frame above is exactly what gets photographed.</p>
+      </section>
+
+      <aside class="results">
+        <h2>Results</h2>
+        <div id="gallery" class="gallery">
+          <p class="empty">Your generated photos will appear here.</p>
+        </div>
+      </aside>
+    </main>
+
+    <dialog id="lightbox">
+      <div class="lb-body">
+        <div class="compare" id="compare">
+          <img id="lbRef" alt="3D reference" />
+          <div class="compare-top" id="compareTop"><img id="lbImg" alt="Generated photo" /></div>
+          <input type="range" id="compareSlider" min="0" max="100" value="100" aria-label="Compare with reference" />
+        </div>
+        <div class="lb-actions">
+          <span class="hint">Slide to compare with the 3D reference</span>
+          <a id="lbDownload" class="button" download="studio-photo.png">Download</a>
+          <button id="lbClose">Close</button>
+        </div>
+        <details>
+          <summary>Prompt used</summary>
+          <p id="lbPrompt" class="prompt"></p>
+        </details>
+      </div>
+    </dialog>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
